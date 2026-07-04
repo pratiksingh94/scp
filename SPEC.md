@@ -33,6 +33,45 @@ it will be using binary cuz its real shit
 ```
 
 
+### `ClientHello` (`0x01`) payload
+```
+[16 bytes: nonce]
+[32 bytes: client ephemeral X25519 public key]
+[32 bytes: PSK Proof - HMAC(PSK, nonce, client_public_key)]
+```
+
+### `ServerHello` (`0x02`) payload
+```
+[16 bytes: nonce]
+[32 bytes: server ephemeral X25519 public key]
+[32 bytes: PSK Proof - HMAC(PSK, nonce, server_public_key)]
+```
+
+### `Done` (`0x03`) payload
+```
+[32 bytes: handhsake MAC - HMAC(session_key, "done" + all previous messages)]
+```
+
+### `Data` (`0x04`) payload
+```
+[16 bytes: nonce]
+[N bytes: ciphertext (ChaCha20-Poly1305 encrypted)]
+```
+
+### `Error` (`0x05`) payload
+```
+[1 byte: error code]
+[N bytes: error message]
+```
+
+```
+0x00 = ErrUnknown        
+0x01 = ErrInvalidPSK     
+0x02 = ErrHandshakeFail  
+0x03 = ErrInvalidMessage 
+```
+
+
 ---
 
 ## Handshake
@@ -53,7 +92,7 @@ Client                    Server
   |                         |
   |--------- Done --------->|  (encrypted with session key, proves client has key)
   |                         |
-  |--------- Done --------->|  (same from server)
+  |<--------- Done ---------|  (same from server)
   |                         |
   |<======= Data ==========>|  (encrypted channel open)
 ```
