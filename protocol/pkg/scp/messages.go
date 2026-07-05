@@ -68,25 +68,25 @@ func DecodeServerHello(payload []byte) (ServerHelloPayload, error) {
 
 // Data ============
 type DataPayload struct {
-	Nonce      [NonceSize]byte
+	Nonce      [12]byte
 	Ciphertext []byte
 }
 
 func EncodeDataPayload(p DataPayload) []byte {
-	buf := make([]byte, NonceSize+len(p.Ciphertext))
-	copy(buf[0:16], p.Nonce[:])
-	copy(buf[16:], p.Ciphertext)
+	buf := make([]byte, 12+len(p.Ciphertext))
+	copy(buf[0:12], p.Nonce[:])
+	copy(buf[12:], p.Ciphertext)
 
 	return buf
 }
 
 func DecodeDataPayload(payload []byte) (DataPayload, error) {
-	if len(payload) < NonceSize {
+	if len(payload) < 12 {
 		return DataPayload{}, fmt.Errorf("data payload too short")
 	}
 
 	return DataPayload{
-		Nonce:      [16]byte(payload[0:16]),
-		Ciphertext: payload[16:],
+		Nonce:      [12]byte(payload[0:12]),
+		Ciphertext: payload[12:],
 	}, nil
 }

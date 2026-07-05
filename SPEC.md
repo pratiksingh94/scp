@@ -54,7 +54,7 @@ it will be using binary cuz its real shit
 
 ### `Data` (`0x04`) payload
 ```
-[16 bytes: nonce]
+[12 bytes: nonce]
 [N bytes: ciphertext (ChaCha20-Poly1305 encrypted)]
 ```
 
