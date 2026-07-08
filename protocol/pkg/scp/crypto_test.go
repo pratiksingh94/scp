@@ -2,7 +2,6 @@ package scp
 
 import (
 	"bytes"
-	"fmt"
 	"testing"
 )
 
@@ -170,9 +169,9 @@ func TestNonceCounter(t *testing.T) {
 	n2 := nc.Next()
 	n3 := nc.Next()
 
-	fmt.Println(n1)
-	fmt.Println(n2)
-	fmt.Println(n3)
+	// fmt.Println(n1)
+	// fmt.Println(n2)
+	// fmt.Println(n3)
 
 	if len(n1) != 12 {
 		t.Fatalf("expected 12 bytes, got %d", len(n1))
