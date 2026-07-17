@@ -22,7 +22,7 @@ type VisualizerStep struct {
 	Step       int            `json:"step"`
 	Actor      Actor          `json:"actor"`
 	Type       string         `json:"type"`
-	Title      string         `json:"string"`
+	Title      string         `json:"title"`
 	Data       map[string]any `json:"data"`
 	Annotation string         `json:"annotation"`
 	IsTransmit bool           `json:"is_transmit"`
@@ -69,7 +69,7 @@ func RunSimulation(emit func(VisualizerStep)) {
 	}, "This PSK proves the client knows the pre-shared secret without revealing it. HMAC is a one-way function so you can verify it with same key but cant reverse it to get the key itself.", false)
 
 	next(ActorClient, "client_hello_sent", "Client -> Server: ClientHello", "handshake", map[string]any{
-		"packet_type":  "0x01 (MsgClientHello)",
+		"packet_type":  "MsgClientHello (0x01)",
 		"payload_size": "80 bytes",
 		"structure":    "public_key[32] + psk_proof[32] + nonce[16]",
 		"public_key":   hex.EncodeToString(clientPub[:]),
@@ -110,7 +110,7 @@ func RunSimulation(emit func(VisualizerStep)) {
 	}, "The server's proof includes both nonces and both public key, this makes it bound to THIS exchange only.", false)
 
 	next(ActorServer, "server_hello_sent", "Server -> Client: ServerHello", "handshake", map[string]any{
-		"packet_type":  "0x02 (MsgServerHello)",
+		"packet_type":  "MsgServerHello (0x02)",
 		"payload_size": "80 bytes",
 		"structure":    "public_key[32] + psk_proof[32] + nonce[16]",
 		"public_key":   hex.EncodeToString(serverPub[:]),
@@ -169,7 +169,8 @@ func RunSimulation(emit func(VisualizerStep)) {
 	}, "This is the first use of session key, we are using ChaCha20-Poly1305 which is an authenticated encryption algorithm (AEAD), cuz it simulatenously encrypts and authenticates", false)
 
 	next(ActorClient, "done_sent", "Client -> Server: Done", "handshake", map[string]any{
-		"packet_type": "0x03 (MsgDone)",
+		"packet_type": "MsgDone (0x03)",
+		"packet_size": "60 bytes",
 		"structure":   "nonce[12] + ciphertext[48]",
 		"nonce":       hex.EncodeToString(clientDoneNonce),
 		"ciphertext":  hex.EncodeToString(encryptedClientDone),
@@ -197,8 +198,9 @@ func RunSimulation(emit func(VisualizerStep)) {
 
 	// start from step 20
 	next(ActorServer, "done_sent", "Server -> Client: Done", "handshake", map[string]any{
-		"packet_type": "0x03 (MsgDone)",
+		"packet_type": "MsgDone (0x03)",
 		"structure":   "nonce[12] + ciphertext[48]",
+		"packet_size": "60 bytes",
 		"nonce":       hex.EncodeToString(serverDoneNonce),
 		"ciphertext":  hex.EncodeToString(encryptedServerDone),
 	}, "Server's Done completes mutual verification. After sending this server side's handshake is considered complete.", true)
@@ -237,9 +239,10 @@ func RunSimulation(emit func(VisualizerStep)) {
 	encryptedMsg, _ := scp.Encrypt(clientSessionKey, msgNonce, plaintext)
 
 	next(ActorClient, "data_sent", "Client -> Server: Encrypted message", "data", map[string]any{
-		"plaintext":  string(plaintext),
-		"nonce":      hex.EncodeToString(msgNonce),
-		"ciphertext": hex.EncodeToString(encryptedMsg),
+		"packet_type": "MsgData (0x04)",
+		"plaintext":   string(plaintext),
+		"nonce":       hex.EncodeToString(msgNonce),
+		"ciphertext":  hex.EncodeToString(encryptedMsg),
 	}, "Each data packet includes a nonce and the ciphertext. The nonce is like a counter, it increments every message.", true)
 
 	decryptedMsg, _ := scp.Decrypt(serverSessionKey, serverDataNC.Next(), encryptedMsg)
@@ -252,9 +255,10 @@ func RunSimulation(emit func(VisualizerStep)) {
 	replyNonce := serverDataNC.Next()
 	encryptedReply, _ := scp.Encrypt(serverSessionKey, replyNonce, reply)
 	next(ActorServer, "data_sent", "Server -> Client: Encrypted reply", "data", map[string]any{
-		"plaintext":  string(reply),
-		"nonce":      hex.EncodeToString(replyNonce),
-		"ciphertext": hex.EncodeToString(encryptedReply),
+		"packet_type": "MsgData (0x04)",
+		"plaintext":   string(reply),
+		"nonce":       hex.EncodeToString(replyNonce),
+		"ciphertext":  hex.EncodeToString(encryptedReply),
 	}, "The server uses its own idependent nonce counter. These are maintained seperately and not synced which can cause probems in bidirectional comms.", false)
 
 	decReply, _ := scp.Decrypt(clientSessionKey, clientDataNC.Next(), encryptedReply)
