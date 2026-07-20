@@ -47,7 +47,7 @@ func RunSimulation(emit func(VisualizerStep)) {
 			Phase:      phase,
 		})
 
-		time.Sleep(800 * time.Millisecond)
+		time.Sleep(1000 * time.Millisecond)
 	}
 
 	clientPub, clientPriv, _ := scp.GenerateKeypair()

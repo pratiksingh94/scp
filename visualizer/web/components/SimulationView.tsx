@@ -61,7 +61,7 @@ export default function SimulationView() {
         <div className="flex flex-col gap-6">
             <div className="flex items-end justify-between">
                 <div className="flex flex-col gap-1">
-                    <p className="text-muted-foreground text-xs uppercase tracking-widest">Interactive Demo</p>
+                    <p className="text-muted-foreground text-xs uppercase tracking-widest">Demo</p>
                     <h2 className="text-2xl font-semibold">Handshake Simulation</h2>
                     <p className="text-sm text-muted-foreground max-w-lg">
                         Watch a totally real SCP session start with every cryptograpic operation, every packet, step by step.
