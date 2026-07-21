@@ -4,11 +4,12 @@ import (
 	"fmt"
 )
 
+// SCP error codes sent in MsgError packets
 const (
-	ErrUnknown        byte = 0x00
-	ErrInvalidPSK     byte = 0x01
-	ErrHandshakeFail  byte = 0x02
-	ErrInvalidMessage byte = 0x03
+	ErrUnknown        byte = 0x00 // unspecified error
+	ErrInvalidPSK     byte = 0x01 // PSK proof verification failed
+	ErrHandshakeFail  byte = 0x02 // Done MAC verification failed
+	ErrInvalidMessage byte = 0x03 // unexpected message type received
 )
 
 type ErrorPayload struct {

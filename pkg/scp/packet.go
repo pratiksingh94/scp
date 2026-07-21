@@ -6,21 +6,27 @@ import (
 	"io"
 )
 
+// MessageType identifies the type of an SCP packet
 type MessageType byte
 
+// SCP message types
 const (
-	MsgClientHello MessageType = 0x01
-	MsgServerHello MessageType = 0x02
-	MsgDone        MessageType = 0x03
-	MsgData        MessageType = 0x04
-	MsgError       MessageType = 0x05
+	MsgClientHello MessageType = 0x01 // opens the handshake
+	MsgServerHello MessageType = 0x02 // server response to ClientHello
+	MsgDone        MessageType = 0x03 // handshake verification
+	MsgData        MessageType = 0x04 // encrypted application data
+	MsgError       MessageType = 0x05 // protocol error, terminates connection
 )
 
+// Packet is the basic unit of the SCP wire format
+// Every SCP message is framed as a 5-byte header (type + length) followed by a payload of exactly length bytes
 type Packet struct {
 	Type    MessageType
 	Payload []byte
 }
 
+// WritePacket serializes p and writes it to w
+// The format is: [1B type][4B big-endian length][NB payload]
 func WritePacket(w io.Writer, p Packet) error {
 	header := make([]byte, 5)
 	header[0] = byte(p.Type)
@@ -40,6 +46,8 @@ func WritePacket(w io.Writer, p Packet) error {
 	return nil
 }
 
+// ReadPacket reads one packet from r and returns it
+// Blocks until a complete packet is available or an error occurs
 func ReadPacket(r io.Reader) (Packet, error) {
 	header := make([]byte, 5)
 	if _, err := io.ReadFull(r, header); err != nil {

@@ -2,6 +2,8 @@ package scp
 
 import "fmt"
 
+// Send encrypts plaintext and writes it to the connection as a MsgData packet
+// each call uses a unique nonce from an internal counter
 func (s *Session) Send(plaintext []byte) error {
 	nonce := s.NonceCounter.Next()
 	ciphertext, err := Encrypt(s.SessionKey, nonce, plaintext)
@@ -22,6 +24,8 @@ func (s *Session) Send(plaintext []byte) error {
 	return WritePacket(s.Conn, packet)
 }
 
+// Receive reads the next MsgData packet from the connection and returns the decrypted plaintext
+// Blocks until a message arrives or error occurs
 func (s *Session) Receive() ([]byte, error) {
 	packet, err := ReadPacket(s.Conn)
 	if err != nil {
@@ -54,6 +58,7 @@ func (s *Session) Receive() ([]byte, error) {
 	return Decrypt(s.SessionKey, dataPayload.Nonce[:], dataPayload.Ciphertext)
 }
 
+// Close closes the underlying network connection
 func (s *Session) Close() error {
 	return s.Conn.Close()
 }

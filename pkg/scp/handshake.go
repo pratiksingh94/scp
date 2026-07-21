@@ -9,6 +9,8 @@ import (
 	"net"
 )
 
+// Session represents an established SCP connection
+// Use Send and Receive to exchange encrypted messages
 type Session struct {
 	Conn         net.Conn
 	SessionKey   []byte
