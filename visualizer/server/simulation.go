@@ -6,8 +6,9 @@ import (
 	"bytes"
 	"encoding/hex"
 	"fmt"
-	"scp/pkg/scp"
 	"time"
+
+	"github.com/pratiksingh94/scp/pkg/scp"
 )
 
 type Actor string

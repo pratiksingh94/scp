@@ -4,7 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"scp/pkg/scp"
+
+	"github.com/pratiksingh94/scp/pkg/scp"
 )
 
 func RunChat(sess *scp.Session) {

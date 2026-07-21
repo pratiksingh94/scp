@@ -4,8 +4,11 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"scp/internal/chat"
-	"scp/pkg/scp"
+
+	// "scp/internal/chat"
+
+	"github.com/pratiksingh94/scp/internal/chat"
+	"github.com/pratiksingh94/scp/pkg/scp"
 )
 
 func main() {

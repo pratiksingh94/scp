@@ -1,4 +1,4 @@
-module scp
+module github.com/pratiksingh94/scp
 
 go 1.26.4
 
