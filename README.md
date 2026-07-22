@@ -6,7 +6,8 @@ A custom TLS-inspired (i hate TLS) secure channel protocol built in Go.
 It establises encrypted and authenticated communication channel using X25519 key exchange, PSK auth and ChaCha20-Poly1305 AEAD encryption.
 This isan independent protocol design and NOT a reimplementation of TLS.
 
-**Handshake visualizer:** [scp.pratiksingh.xyz](https://scp.pratiksingh.xyz)
+**Handshake visualizer:** [scp.pratiksingh.xyz](https://scp.pratiksingh.xyz)    
+**Docs (will improve later):** [pkg.go.dev](https://pkg.go.dev/github.com/pratiksingh94/scp/pkg/scp)
 
 > This is an educational project i made for learning and experimenting, do NOT use it in any kind of production environment lmao
 
